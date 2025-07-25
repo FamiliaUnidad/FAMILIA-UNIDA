@@ -1,0 +1,200 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Familia Unida</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: #f2f2f2;
+      color: #333;
+    }
+    header {
+      background-color: #4a90e2;
+      padding: 20px;
+      text-align: center;
+      color: white;
+    }
+    .container {
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      margin-bottom: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    input, button, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .chat {
+      background: #e9f5ff;
+      padding: 10px;
+      border-radius: 5px;
+      margin: 5px 0;
+    }
+    .notificacion {
+      background-color: #dff0d8;
+      padding: 10px;
+      margin-top: 10px;
+      border-left: 5px solid green;
+      border-radius: 5px;
+    }
+    video, canvas {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      font-size: 0.9em;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>👨‍👦 Familia Unida</h1>
+  <p>Conectando padres e hijos</p>
+</header>
+
+<div class="container">
+
+  <!-- Pantalla Inicial -->
+  <div class="card" id="login-card">
+    <h2>Pantalla Inicial</h2>
+    <input type="text" id="nombre" placeholder="Nombre">
+    <input type="email" placeholder="Correo Electrónico">
+    <input type="tel" placeholder="N° de Celular">
+    <button onclick="iniciarSesion()">Ingresar</button>
+  </div>
+
+  <!-- Pantalla Principal -->
+  <div class="card" id="chat-card" style="display:none">
+    <h2>Bienvenido, <span id="nombreUsuario"></span> 👋</h2>
+    <input type="text" id="mensaje" placeholder="Escribe tu mensaje...">
+    <button onclick="enviarMensaje()">Enviar</button>
+    <div id="chatBox"></div>
+  </div>
+
+  <!-- Notificaciones -->
+  <div class="card" id="notificaciones-card" style="display:none">
+    <h2>Notificaciones</h2>
+    <ul id="notificaciones">
+      <li>📨 Ernesto Cruz te envió solicitud</li>
+      <li>📞 Llamada de Gladys</li>
+    </ul>
+    <button onclick="agregarNotificacion()">Nueva notificación</button>
+  </div>
+
+  <!-- Interacción emocional -->
+  <div class="card" id="emocion-card" style="display:none">
+    <h2>¿Cómo te sientes?</h2>
+    <select id="estadoAnimo">
+      <option>Muy bien</option>
+      <option>Bien</option>
+      <option>Mal</option>
+      <option>Muy mal</option>
+    </select>
+    <button onclick="mostrarRespuesta()">Responder</button>
+    <div id="respuestaEmocion"></div>
+  </div>
+
+  <!-- Cámara -->
+  <div class="card" id="camara-card" style="display:none">
+    <h2>📷 Cámara</h2>
+    <video id="video" autoplay></video>
+    <button onclick="tomarFoto()">Tomar Foto</button>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <div id="fotoCapturada"></div>
+  </div>
+
+</div>
+
+<footer>
+  © 2025 Familia Unida - Proyecto Escolar
+</footer>
+
+<script>
+  function iniciarSesion() {
+    const nombre = document.getElementById("nombre").value;
+    if (nombre.trim() === "") {
+      alert("Por favor ingresa tu nombre");
+      return;
+    }
+
+    document.getElementById("nombreUsuario").textContent = nombre;
+    document.getElementById("login-card").style.display = "none";
+    document.getElementById("chat-card").style.display = "block";
+    document.getElementById("notificaciones-card").style.display = "block";
+    document.getElementById("emocion-card").style.display = "block";
+    document.getElementById("camara-card").style.display = "block";
+
+    iniciarCamara();
+  }
+
+  function enviarMensaje() {
+    const mensaje = document.getElementById("mensaje").value;
+    if (mensaje.trim() === "") return;
+
+    const chatBox = document.getElementById("chatBox");
+    const nuevoMensaje = document.createElement("div");
+    nuevoMensaje.className = "chat";
+    nuevoMensaje.textContent = mensaje;
+    chatBox.appendChild(nuevoMensaje);
+    document.getElementById("mensaje").value = "";
+  }
+
+  function mostrarRespuesta() {
+    const emocion = document.getElementById("estadoAnimo").value;
+    document.getElementById("respuestaEmocion").innerHTML = `<div class="notificacion">😄 Respuesta registrada: <strong>${emocion}</strong></div>`;
+  }
+
+  function agregarNotificacion() {
+    const nueva = document.createElement("li");
+    nueva.textContent = "📩 Recibiste un mensaje de Papá: ¿Dónde estás?";
+    document.getElementById("notificaciones").appendChild(nueva);
+  }
+
+  function iniciarCamara() {
+    const video = document.getElementById('video');
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => {
+        video.srcObject = stream;
+      })
+      .catch(err => {
+        alert("Error al acceder a la cámara: " + err.message);
+      });
+  }
+
+  function tomarFoto() {
+    const canvas = document.getElementById('canvas');
+    const video = document.getElementById('video');
+    const foto = document.getElementById('fotoCapturada');
+    canvas.style.display = "block";
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+
+    const imgURL = canvas.toDataURL("image/png");
+
+    foto.innerHTML = `<h4>📸 Foto tomada:</h4><img src="${imgURL}" alt="Foto tomada" style="width: 100%; border-radius: 10px;">`;
+  }
+</script>
+
+</body>
+</html>
